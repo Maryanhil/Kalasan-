@@ -1,0 +1,407 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+   <meta charset="UTF-8">
+   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+   <title>Dashboard</title>
+   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css" />
+   <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+   <style>
+       body {
+           font-family: 'Roboto', sans-serif;
+           margin: 0;
+           padding: 0;
+           display: flex;
+           height: 100vh;
+           background-color: #f0f2f5;
+       }
+       #sidebar {
+           width: 250px;
+           background-color: #e0f2f1; 
+           padding: 20px;
+           box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
+           border-right: 1px solid #ddd;
+           height: 100vh;
+           display: flex;
+           flex-direction: column;
+       }
+       #sidebar h2 {
+           display: flex;
+           align-items: center;
+           margin-top: 0;
+           color: #004d40; /* Darker green for heading */
+           font-size: 24px;
+           font-weight: 500;
+       }
+       #sidebar img {
+           width: 30px; /* Adjust size as needed */
+           height: 30px;
+           margin-right: 10px;
+       }
+       #sidebar .title {
+           font-size: 18px; /* Slightly smaller than h2 */
+           font-weight: 400;
+       }
+       #sidebar ul {
+           list-style-type: none;
+           padding: 0;
+           margin: 20px 0;
+       }
+       #sidebar ul li {
+           padding: 10px;
+           margin-bottom: 10px;
+           background-color: #b2dfdb; /* Lighter mint green for list items */
+           border-radius: 5px;
+           cursor: pointer;
+           transition: background-color 0.3s ease;
+           color: #004d40; /* Dark green text */
+       }
+       #sidebar ul li:hover {
+           background-color: #80cbc4; /* Slightly darker mint green on hover */
+       }
+       #sidebar input, #sidebar button {
+           width: 100%;
+           margin-bottom: 10px;
+           padding: 10px;
+           border: 1px solid #80cbc4; /* Mint green border */
+           border-radius: 5px;
+           font-size: 16px;
+       }
+       #sidebar input::placeholder {
+           color: #004d40; /* Dark green placeholder text */
+       }
+       #content {
+           flex: 1;
+           padding: 20px;
+           overflow: auto;
+       }
+       #map {
+           height: 100vh;
+       }
+       .card {
+           background: white;
+           padding: 15px;
+           margin-bottom: 20px;
+           border-radius: 5px;
+           box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+       }
+       .card h3 {
+           margin: 0;
+           color: #004d40; /* Dark green for card titles */
+       }
+       .chart-container {
+           position: relative;
+           height: 300px;
+           margin-top: 20px;
+       }
+       .record-item {
+           display: flex;
+           justify-content: space-between;
+           align-items: center;
+           margin-bottom: 10px;
+       }
+       .record-item button {
+           margin-left: 5px;
+           padding: 5px 10px;
+           font-size: 14px;
+           border: none;
+           border-radius: 5px;
+           cursor: pointer;
+       }
+       .update-button {
+           background-color: #4caf50; /* Green for update */
+           color: white;
+       }
+       .delete-button {
+           background-color: #f44336; /* Red for delete */
+           color: white;
+       }
+       .update-button:hover {
+           background-color: #45a049; /* Darker green on hover */
+       }
+       .delete-button:hover {
+           background-color: #e53935; /* Darker red on hover */
+       }
+       style>
+        /* Profile Container */
+        .profile-container {
+            display: flex;
+            align-items: center;
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            margin-bottom: 20px;
+            max-width: 600px;
+            margin: 20px auto; /* Center the profile container */
+        }
+
+        /* Profile Section */
+.profile-container {
+    display: flex;
+    flex-direction: column; 
+    align-items: center; 
+    background-color: #fff;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    margin-bottom: 20px;
+    text-align: center; 
+}
+
+
+.profile-image {
+    width: 120px; 
+    height: 120px; 
+    border-radius: 50%; /* Circular profile picture */
+    object-fit: cover;
+    border: 3px solid #ddd; /* Optional border around profile picture */
+    margin-bottom: 15px; /* Space between picture and details */
+}
+
+/* Profile Details */
+.profile-details h3 {
+    margin: 0;
+    font-size: 24px;
+    color: #333;
+}
+
+.profile-details p {
+    margin: 5px 0;
+    font-size: 16px;
+    color: #666;
+}
+
+/* Profile Actions */
+.profile-actions {
+    margin-top: 20px;
+}
+
+.action-button {
+    display: inline-block;
+    padding: 10px 20px;
+    margin: 5px;
+    border-radius: 5px;
+    text-decoration: none;
+    color: #fff;
+    background-color: #4CAF50;
+    font-size: 16px;
+}
+
+.action-button:hover {
+    background-color: #45a049;
+}
+
+
+
+   </style>
+</head>
+<body>
+ <div id="sidebar">
+   <h2>
+       <img src="https://scontent.fcgm1-1.fna.fbcdn.net/v/t1.15752-9/457517144_409438475115355_2798500023641778435_n.png?_nc_cat=105&ccb=1-7&_nc_sid=9f807c&_nc_eui2=AeH7krCOe8_pRW3zlz_26miAOM-aPh5q96I4z5o-Hmr3otLDZaQpd6b7l6FBErLPwIypmNAdSloH-4CRDGUrEpuZ&_nc_ohc=qGEJWdfo7ckQ7kNvgHO6NdB&_nc_ht=scontent.fcgm1-1.fna&_nc_gid=AMhGRP7rxVyLPINir34vdaF&oh=03_Q7cD1QHEMDID1NExRqQJeAH73Iy04s9vlhrxbpWbAT69N-etRw&oe=6704FBF2" alt="Tree Logo"> <!-- Logo -->
+       <span class="title">KALASAN DASHBOARD</span>
+   </h2>
+   <ul>
+       <li onclick="showSection('profile')">Profile</li>
+       <li onclick="showSection('overview')">Overview</li>
+       <li onclick="showSection('map')">Map</li>
+       <li onclick="showSection('community')">Community</li>
+       <li onclick="showSection('records')">Records</li>
+       <li onclick="showSection('settings')">Settings</li>
+       <li onclick="logout()">Logout</li>
+   </ul>
+   <div class="sidebar-section">
+       <h3>Add Tree Record</h3>
+       <input type="text" id="species" placeholder="Species">
+       <input type="text" id="location" placeholder="Latitude,Longitude">
+       <button onclick="addRecord()">Add Tree Record</button>
+   </div>
+   <div class="sidebar-section">
+       <h3>Update Tree Record</h3>
+       <input type="text" id="update-id" placeholder="Record ID">
+       <input type="text" id="update-species" placeholder="New Species">
+       <input type="text" id="update-location" placeholder="New Latitude,Longitude">
+       <button class="update-button" onclick="updateRecord()">Update Tree Record</button>
+   </div>
+   <div class="sidebar-section">
+       <h3>Delete Tree Record</h3>
+       <input type="text" id="delete-id" placeholder="Record ID">
+       <button class="delete-button" onclick="deleteRecord()">Delete Tree Record</button>
+   </div>
+ </div>
+ <div id="content">
+   <!-- Profile Section -->
+   <div class="profile-container">
+       <img class="profile-image" src="http://images.nickjr.com/nickjr/properties/peppa-pig/peppa-pig-1x1.jpg" alt="Admin Profile Picture"> <!-- Placeholder profile image -->
+        <div class="profile-details">
+            <h3>Marianne Gil</h3>
+            <p>Role: Administrator</p>
+            <p>Email: marianne.gil@example.com</p>
+            <p>Last Login: September 9, 2024</p>
+        </div>
+    <div class="profile-actions">
+        <a href="/edit-profile" class="action-button">Edit Profile</a>
+        <a href="/change-password" class="action-button">Change Password</a>
+        <a href="/logout" class="action-button">Logout</a>
+    </div>
+    </div>
+   
+   <!-- Content for each section will be dynamically injected here -->
+   <div class="card">
+    
+       <h3>Overview</h3>
+       <p>This is the overview section.</p>
+       <p>Here you can find a summary of the data and key metrics.</p>
+   </div>
+   <div class="card">
+       <h3>Summary Statistics</h3>
+       <p>Number of species recorded: 120</p>
+       <p>Total records: 450</p>
+   </div>
+   <div class="chart-container">
+       <canvas id="speciesChart"></canvas>
+   </div>
+ </div>
+ <div id="map"></div>
+ 
+ <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
+ <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+ <script src="app.js"></script> <!-- Include your external JS file -->
+ <script>
+   let map;
+
+   function showSection(section) {
+    const contentDiv = document.getElementById('content');
+    // Clear the content div
+    contentDiv.innerHTML = '';
+
+    if (section === 'profile') {
+        // Fetch profile details from the server or use mock data
+        fetch('/profile')
+            .then(response => response.json())
+            .then(data => {
+                contentDiv.innerHTML = `
+                    <div class="profile-container">
+                        <img class="profile-image" src="${data.profileImage}" alt="Admin Profile Picture">
+                        <div class="profile-details">
+                            <h3>${data.name}</h3>
+                            <p>${data.role}</p>
+                            <p>Email: ${data.email}</p>
+                        </div>
+                    </div>
+                `;
+            })
+            .catch(err => console.error('Error fetching profile data:', err));
+    } else {
+        contentDiv.innerHTML = `
+            <div class="card">
+                <h3>Welcome</h3>
+                <p>Please select an option from the sidebar.</p>
+            </div>
+        `;
+    }
+}
+
+   function initializeMap() {
+       if (map) {
+           map.remove();
+       }
+       map = L.map('map').setView([8.3781, 125.1277], 13);
+       L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+           attribution: '© OpenStreetMap contributors'
+       }).addTo(map);
+   }
+
+   function initializeChart() {
+       var ctx = document.getElementById('speciesChart').getContext('2d');
+       var speciesChart = new Chart(ctx, {
+           type: 'bar',
+           data: {
+               labels: ['Narra', 'Mahogany', 'Acacia', 'Molave'],
+               datasets: [{
+                   label: '# of Species',
+                   data: [12, 19, 3, 5],
+                   backgroundColor: [
+                       'rgba(75, 192, 192, 0.2)',
+                       'rgba(153, 102, 255, 0.2)',
+                       'rgba(255, 159, 64, 0.2)',
+                       'rgba(255, 99, 132, 0.2)'
+                   ],
+                   borderColor: [
+                       'rgba(75, 192, 192, 1)',
+                       'rgba(153, 102, 255, 1)',
+                       'rgba(255, 159, 64, 1)',
+                       'rgba(255, 99, 132, 1)'
+                   ],
+                   borderWidth: 1
+               }]
+           },
+           options: {
+               scales: {
+                   y: {
+                       beginAtZero: true
+                   }
+               }
+           }
+       });
+   }
+
+   const session = require('express-session');
+
+app.use(session({
+    secret: 'your-secret-key',
+    resave: false,
+    saveUninitialized: true,
+    cookie: { secure: false } // Set secure: true if using HTTPS
+}));
+
+app.post('/logout', (req, res) => {
+    req.session.destroy(err => {
+        if (err) {
+            console.error('Error destroying session:', err);
+            return res.status(500).send('Internal server error');
+        }
+        res.clearCookie('connect.sid'); // Clear session cookie
+        res.sendStatus(200); // Send success response
+    });
+});
+
+    then(response => {
+        if (response.ok) {
+            // Clear authentication data
+            localStorage.removeItem('authToken');
+            sessionStorage.removeItem('userSession');
+
+            alert('Logged out successfully.');
+            window.location.href = 'login.html'; // Redirect to the login page
+        } else {
+            alert('Logout failed.');
+        }
+    }).catch(error => {
+        console.error('Error:', error);
+        alert('An error occurred during logout.');
+    });
+
+   function addTreeRecord() {
+       const species = document.getElementById('species').value;
+       const location = document.getElementById('location').value;
+       console.log(`Added new record: Species - ${species}, Location - ${location}`);
+   }
+
+   function updateTreeRecord() {
+       const id = document.getElementById('update-id').value;
+       const species = document.getElementById('update-species').value;
+       const location = document.getElementById('update-location').value;
+       console.log(`Updated record ID ${id}: New Species - ${species}, New Location - ${location}`);
+   }
+
+   function deleteTreeRecord() {
+       const id = document.getElementById('delete-id').value;
+       console.log(`Deleted record with ID: ${id}`);
+   }
+
+   document.addEventListener('DOMContentLoaded', function() {
+       showSection('profile'); // Show the profile section by default
+   });
+</script>

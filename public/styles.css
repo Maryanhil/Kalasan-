@@ -1,0 +1,87 @@
+/* Background settings */
+.background {
+    background-image: url('https://wallpapers.com/images/hd/lush-green-forest-neblzag5t76yolal.jpg');
+    background-size: cover;
+    background-position: center;
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+/* Blurred container */
+.container-blur {
+    background: rgba(255, 255, 255, 0.2);
+    backdrop-filter: blur(10px);
+    border-radius: 15px;
+    padding: 50px 40px;
+    width: 350px;
+    position: relative;
+}
+
+/* Logo container */
+.logo-container {
+    position: absolute;
+    top: -80px;
+    left: 50%;
+    transform: translateX(-50%);
+}
+
+.logo {
+    width: 150px;
+    height: 150px;
+    border-radius: 50%;
+    border: 5px solid rgba(255, 255, 255, 0.2);
+}
+
+/* Sign-up/Login form styles */
+.signup-form, .login-form {
+    text-align: center;
+}
+
+.signup-form h2, .login-form h2 {
+    margin-top: 80px; /* Adjust for the logo overlap */
+    font-size: 24px;
+    color: #fff;
+    letter-spacing: 2px;
+}
+
+.signup-form input, .login-form input {
+    width: 100%;
+    padding: 10px;
+    margin: 10px 0;
+    border-radius: 5px;
+    border: none;
+    background: rgba(255, 255, 255, 0.3);
+    color: #fff;
+}
+
+/* Buttons */
+button {
+    width: 100%;
+    padding: 10px;
+    border-radius: 5px;
+    border: none;
+    background-color: #4CAF50;
+    color: white;
+    cursor: pointer;
+    font-size: 16px;
+}
+
+button:hover {
+    background-color: #45a049;
+}
+
+p {
+    color: white;
+}
+
+a {
+    color: #4CAF50;
+    text-decoration: none;
+}
+
+a:hover {
+    text-decoration: underline;
+}
+

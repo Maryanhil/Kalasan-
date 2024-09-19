@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Manage Records</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <h1>Manage Records</h1>
+  <nav>
+    <a href="/">Home</a>
+    <a href="/stats">Statistics</a>
+    <a href="/manage">Manage Records</a>
+  </nav>
+  <form id="recordForm">
+    <label for="name">Tree Name:</label>
+    <input type="text" id="name" name="name" required>
+    <label for="lat">Latitude:</label>
+    <input type="text" id="lat" name="lat" required>
+    <label for="lng">Longitude:</label>
+    <input type="text" id="lng" name="lng" required>
+    <button type="submit">Add Record</button>
+  </form>
+  <script src="manage.js"></script>
+</body>
+</html>
